@@ -1,11 +1,29 @@
 package ppi.e_commerce.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "order_details")
 public class OrderDetail {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private Double price;
     private Integer quantity;
     private Double totalPrice;
+
+    @OneToOne
+    private Order order;
+
+    @ManyToOne
+    private Product product;
 
     public OrderDetail() {
     }
@@ -35,6 +53,7 @@ public class OrderDetail {
     public Double getTotalPrice() {
         return totalPrice;
     }
+    
     // Setters
     public void setId(Integer id) {
         this.id = id;
@@ -50,6 +69,22 @@ public class OrderDetail {
     }
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override

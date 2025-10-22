@@ -1,6 +1,17 @@
 package ppi.e_commerce.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "products")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;
@@ -8,16 +19,21 @@ public class Product {
     private int cantidad;
     private String imageUrl;
 
+    @ManyToOne
+    private User user;
+
     public Product() {
     }
 
-    public Product(Integer id, String name, String description, Double price, int cantidad, String imageUrl) {
+    public Product(Integer id, String name, String description, Double price, int cantidad, String imageUrl,
+            User user) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.cantidad = cantidad;
         this.imageUrl = imageUrl;
+        this.user = user;
     }
 
     // Getters
@@ -67,6 +83,14 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
