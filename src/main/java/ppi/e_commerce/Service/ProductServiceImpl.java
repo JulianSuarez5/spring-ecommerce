@@ -1,6 +1,8 @@
 package ppi.e_commerce.Service;
 
 import ppi.e_commerce.Model.Product;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +32,10 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 }

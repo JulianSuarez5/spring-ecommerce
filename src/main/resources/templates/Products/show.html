@@ -52,14 +52,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td ></td>
-        <td ></td>
-        <td ></td>
-        <td ></td>
-        <td><a  class="btn btn-warning" href="">Editar</a> </td>
-        <td><a  class="btn btn-danger" href="">Eliminar</a> </td>
-      </tr>       
+      <tr th:each="product : ${products}">
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.description}"></td>
+        <td th:text="${product.cantidad}"></td>
+        <td th:text="${product.price}"></td>
+        <td><a  class="btn btn-warning" th:href="@{/products/edit/{id}(id=${product.id})}">Editar</a> </td>
+        <td><a  class="btn btn-danger" th:href="@{/products/delete/{id}(id=${product.id})}">Eliminar</a> </td>
+      </tr>
     </tbody>
   </table>
 

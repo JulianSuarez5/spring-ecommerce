@@ -1,6 +1,8 @@
 package ppi.e_commerce.Service;
 
 import ppi.e_commerce.Model.Product;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
@@ -8,4 +10,6 @@ public interface ProductService {
     public Optional<Product> getProductById(Integer id);
     public void updateProduct(Product product);
     public void deleteProduct(Integer id);
+
+    public List<Product> findAll();
 }
