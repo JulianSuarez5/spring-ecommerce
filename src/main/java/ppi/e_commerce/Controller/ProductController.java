@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppi.e_commerce.Model.Product;
@@ -39,6 +43,26 @@ public class ProductController {
         product.setUser(user);
 
         product_service.saveProduct(product);
+        return "redirect:/products";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        Product product = new Product();
+        Optional<Product> optionalProduct = product_service.getProductById(id);
+        product = optionalProduct.get();
+        model.addAttribute("product", product);
+
+        log.info("Producto buscado: {}", product);
+
+        return "Products/edit";
+    }
+
+    @PostMapping("/update")
+    public String update (Product product){
+
+        product_service.updateProduct(product);
+
         return "redirect:/products";
     }
 }
