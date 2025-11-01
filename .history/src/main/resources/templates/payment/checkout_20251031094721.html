@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Pagar Pedido')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagar Pedido</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Checkout Header -->
+        <div class="bg-gradient-primary text-white py-5">
+            <div class="container">
+                <div class="row align-items-center justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <div class="mb-4">
+                            <i class="bi bi-cart-check" style="font-size: 5rem;"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold mb-3">Finalizar Compra</h1>
+                        <p class="lead mb-0">Solo un paso más para completar tu pedido</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Order Summary -->
+                    <div class="card border-0 shadow-custom">
+                        <div class="card-header bg-gradient-secondary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-cart"></i> Resumen del Pedido
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Product List -->
+                            <div class="table-responsive mb-3">
+                                <table class="table table-borderless align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th class="text-center">Cantidad</th>
+                                            <th class="text-end">Precio</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Product Row -->
+                                        <tr th:each="item : ${items}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img th:src="${item.imageUrl}" alt="Product" class="img-fluid rounded" style="width: 60px;">
+                                                    <div class="ms-3">
+                                                        <h6 class="fw-bold mb-0" th:text="${item.name}">Nombre del Producto</h6>
+                                                        <small class="text-muted" th:text="${item.sku}">SKU: 123456</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center" th:text="${item.quantity}">1</td>
+                                            <td class="text-end" th:text="${#numbers.formatCurrency(item.price)}">$99.99</td>
+                                            <td class="text-end fw-bold" th:text="${#numbers.formatCurrency(item.quantity * item.price)}">$99.99</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <!-- Subtotal -->
+                                        <tr>
+                                            <td colspan="3" class="text-end">Subtotal:</td>
+                                            <td class="text-end" th:text="${#numbers.formatCurrency(order.subtotal)}">$99.99</td>
+                                        </tr>
+                                        <!-- Shipping -->
+                                        <tr>
+                                            <td colspan="3" class="text-end">
+                                                <span>Envío:</span>
+                                                <small class="text-muted d-block">
+                                                    <i class="bi bi-truck"></i> Entrega estimada: 3-5 días hábiles
+                                                </small>
+                                            </td>
+                                            <td class="text-end" th:text="${order.shippingCost > 0 ? #numbers.formatCurrency(order.shippingCost) : 'Gratis'}">$9.99</td>
+                                        </tr>
+                                        <!-- Discount -->
+                                        <tr th:if="${order.discount > 0}">
+                                            <td colspan="3" class="text-end text-success">
+                                                <i class="bi bi-tag"></i> Descuento Aplicado:
+                                            </td>
+                                            <td class="text-end text-success" th:text="'-' + ${#numbers.formatCurrency(order.discount)}">-$10.00</td>
+                                        </tr>
+                                        <!-- Total -->
+                                        <tr class="fw-bold fs-5">
+                                            <td colspan="3" class="text-end">Total a Pagar:</td>
+                                            <td class="text-end" th:text="${#numbers.formatCurrency(order.total)}">$99.99</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="card border-0 shadow-custom mt-4">
+                        <div class="card-header bg-gradient-secondary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-credit-card"></i> Método de Pago
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="payment-form" th:action="@{/orders/process}" method="post" class="needs-validation" novalidate>
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                                <input type="hidden" name="orderId" th:value="${order.id}">
+
+                                <!-- Tabs for Payment Methods -->
+                                <ul class="nav nav-pills mb-4 flex-column flex-sm-row gap-2" role="tablist">
+                                    <!-- PayPal -->
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link active w-100" data-bs-toggle="pill" data-bs-target="#paypal-tab" type="button" role="tab">
+                                            <i class="bi bi-paypal"></i> PayPal
+                                        </button>
+                                    </li>
+                                    <!-- Cash on Delivery -->
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link w-100" data-bs-toggle="pill" data-bs-target="#cash-tab" type="button" role="tab">
+                                            <i class="bi bi-cash"></i> Contra Entrega
+                                        </button>
+                                    </li>
+                                    <!-- Bank Transfer -->
+                                    <li class="nav-item flex-fill" role="presentation">
+                                        <button class="nav-link w-100" data-bs-toggle="pill" data-bs-target="#transfer-tab" type="button" role="tab">
+                                            <i class="bi bi-bank"></i> Transferencia
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <!-- Tab Content -->
+                                <div class="tab-content">
+                                    <!-- PayPal Tab -->
+                                    <div class="tab-pane fade show active" id="paypal-tab" role="tabpanel">
+                                        <div class="text-center py-4">
+                                            <img src="/img/paypal-logo.png" alt="PayPal" class="img-fluid mb-4" style="max-height: 60px;">
+                                            <p class="text-muted mb-4">
+                                                Serás redirigido a PayPal para completar tu pago de forma segura.
+                                            </p>
+                                            <!-- PayPal Button -->
+                                            <div id="paypal-button-container" class="d-flex justify-content-center"></div>
+                                            <small class="text-muted d-block mt-3">
+                                                <i class="bi bi-shield-lock"></i> 
+                                                Tus datos están protegidos por el sistema de seguridad de PayPal
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cash on Delivery Tab -->
+                                    <div class="tab-pane fade" id="cash-tab" role="tabpanel">
+                                        <div class="p-4">
+                                            <div class="alert alert-info">
+                                                <h6 class="fw-bold mb-3">
+                                                    <i class="bi bi-info-circle"></i> Información Importante
+                                                </h6>
+                                                <ul class="mb-0">
+                                                    <li>El pago se realizará en efectivo al momento de la entrega</li>
+                                                    <li>Por favor, ten el dinero exacto para facilitar la entrega</li>
+                                                    <li>Recibirás una factura al momento de la entrega</li>
+                                                </ul>
+                                            </div>
+                                            <button type="submit" name="method" value="cash" class="btn btn-primary btn-lg w-100">
+                                                <i class="bi bi-cash"></i> Confirmar Pago Contra Entrega
+                                            </button>
+                                            <small class="text-muted d-block text-center mt-3">
+                                                <i class="bi bi-shield-check"></i>
+                                                Pago 100% seguro al recibir tu pedido
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bank Transfer Tab -->
+                                    <div class="tab-pane fade" id="transfer-tab" role="tabpanel">
+                                        <div class="p-4">
+                                            <div class="alert alert-warning">
+                                                <h6 class="fw-bold mb-3">
+                                                    <i class="bi bi-bank"></i> Datos Bancarios
+                                                </h6>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-2">
+                                                        <strong>Banco:</strong> Banco de Bogotá
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <strong>Tipo de cuenta:</strong> Ahorros
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <strong>Número de cuenta:</strong> 123-456789-10
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <strong>Titular:</strong> E-Commerce Pro SAS
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <strong>NIT:</strong> 900.123.456-7
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" name="method" value="transfer" class="btn btn-primary btn-lg w-100">
+                                                <i class="bi bi-bank"></i> Confirmar Pago por Transferencia
+                                            </button>
+                                            <small class="text-muted d-block text-center mt-3">
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                                Recuerda enviar el comprobante de pago a pagos@ecommerce-pro.com
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Information -->
+                    <div class="card border-0 shadow-custom mt-4">
+                        <div class="card-header bg-gradient-secondary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-truck"></i> Información de Envío
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold mb-2">Dirección de Entrega:</h6>
+                                    <p class="mb-1" th:text="${order.shippingAddress.fullName}">Nombre Completo</p>
+                                    <p class="mb-1" th:text="${order.shippingAddress.address}">Dirección</p>
+                                    <p class="mb-1" th:text="${order.shippingAddress.city + ', ' + order.shippingAddress.state}">Ciudad, Estado</p>
+                                    <p class="mb-0">
+                                        <span th:text="${order.shippingAddress.phone}">Teléfono</span>
+                                        <a href="#" class="text-primary ms-2">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-2">Método de Envío:</h6>
+                                    <p class="mb-1">
+                                        <i class="bi bi-truck text-success"></i>
+                                        <strong>Envío Estándar</strong>
+                                    </p>
+                                    <p class="mb-1 text-muted">
+                                        Entrega estimada: 3-5 días hábiles
+                                    </p>
+                                    <p class="mb-0">
+                                        <small class="text-muted">
+                                            Los tiempos de entrega pueden variar según la ubicación
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Information -->
+                    <div class="card border-0 shadow-custom mt-4">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-headset"></i> ¿Necesitas Ayuda?
+                            </h6>
+                            <p class="text-muted mb-3">
+                                Nuestro equipo de soporte está disponible 24/7 para ayudarte
+                            </p>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-telephone text-primary me-2 fs-5"></i>
+                                        <div class="text-start">
+                                            <small class="text-muted d-block">Teléfono</small>
+                                            <strong>+57 1 234 5678</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-whatsapp text-success me-2 fs-5"></i>
+                                        <div class="text-start">
+                                            <small class="text-muted d-block">WhatsApp</small>
+                                            <strong>+57 300 123 4567</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-chat-dots text-primary me-2 fs-5"></i>
+                                        <div class="text-start">
+                                            <small class="text-muted d-block">Chat en Vivo</small>
+                                            <a href="#" class="text-decoration-none">Iniciar Chat</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Badges -->
+                    <div class="text-center mt-4">
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-auto">
+                                <img src="/img/security/ssl-badge.png" alt="SSL" class="img-fluid" style="height: 40px;">
+                            </div>
+                            <div class="col-auto">
+                                <img src="/img/security/pci-badge.png" alt="PCI" class="img-fluid" style="height: 40px;">
+                            </div>
+                            <div class="col-auto">
+                                <img src="/img/security/norton-badge.png" alt="Norton" class="img-fluid" style="height: 40px;">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- PayPal Script -->
+        <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=COP"></script>
+        <script>
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'blue',
+                    shape: 'rect',
+                    label: 'pay'
+                },
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '[[${order.total}]]',
+                                currency_code: 'COP'
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        // Redirect to success page
+                        window.location.href = '/payment/success?orderId=[[${order.id}]]&method=paypal';
+                    });
+                },
+                onError: function(err) {
+                    // Redirect to error page
+                    window.location.href = '/payment/cancel';
+                }
+            }).render('#paypal-button-container');
+        </script>
+
+        <!-- Form Validation Script -->
+        <script>
+            // Form validation
+            (function() {
+                'use strict';
+                var forms = document.querySelectorAll('.needs-validation');
+                Array.prototype.slice.call(forms).forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            })();
+
+            // Payment method tabs
+            document.addEventListener('DOMContentLoaded', function() {
+                var tabs = document.querySelectorAll('[data-bs-toggle="pill"]');
+                tabs.forEach(function(tab) {
+                    tab.addEventListener('shown.bs.tab', function(e) {
+                        // Update hidden input value based on selected tab
+                        var method = e.target.getAttribute('data-bs-target').replace('#', '').replace('-tab', '');
+                        document.querySelector('input[name="method"]').value = method;
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

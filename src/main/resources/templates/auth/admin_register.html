@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Admin - E-Commerce Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(180deg,#f8fafc,#eef2f7); }
+        .card { border-radius: .6rem; max-width:520px; margin:4.5rem auto; }
+    </style>
+</head>
+<body>
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <div class="text-center mb-3">
+                <h3 class="fw-bold text-primary"><i class="bi bi-person-plus"></i> Registrar Administrador</h3>
+                <p class="text-muted small">Crea una cuenta con rol de administrador</p>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/admin/register}" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label"><i class="bi bi-person"></i> Usuario</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label"><i class="bi bi-envelope"></i> Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label"><i class="bi bi-lock"></i> Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <input type="hidden" name="role" value="ADMIN" />
+                <div th:if="${adminExists}" class="mb-3">
+                    <label for="token" class="form-label"><i class="bi bi-key-fill"></i> Código secreto</label>
+                    <input type="text" class="form-control" id="token" name="token" placeholder="Código requerido para crear admin" required>
+                    <div class="form-text">La creación de administradores está restringida. Si ya existe un admin, introduce el código secreto.</div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-danger">Crear cuenta de Administrador</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="/admin/login" class="btn btn-link">Ir al login de administrador</a>
+                <a href="/login" class="btn btn-link">Ir al login de cliente</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Inicio')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Banner Principal -->
+        <div class="bg-info text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="display-4 fw-bold mb-4">Bienvenido a nuestra Tienda</h1>
+                        <p class="lead mb-4">Descubre nuestros productos de alta calidad a los mejores precios.</p>
+                        <a th:href="@{/products}" class="btn btn-light btn-lg">
+                            <i class="bi bi-shop"></i> Ver Productos
+                        </a>
+                    </div>
+                    <div class="col-md-6 d-none d-md-block">
+                        <img src="/images/banner.jpg" alt="Banner" class="img-fluid rounded shadow">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <!-- Categorías Destacadas -->
+            <section class="mb-5">
+                <h2 class="h3 fw-bold mb-4">
+                    <i class="bi bi-grid text-info"></i> Categorías Destacadas
+                </h2>
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-3" th:each="category : ${featuredCategories}">
+                        <a th:href="@{/products(category=${category.id})}" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-collection fs-1 text-info mb-3"></i>
+                                    <h5 class="card-title text-dark mb-0" th:text="${category.name}">
+                                        Categoría
+                                    </h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Productos Destacados -->
+            <section class="mb-5">
+                <h2 class="h3 fw-bold mb-4">
+                    <i class="bi bi-star text-info"></i> Productos Destacados
+                </h2>
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-3" th:each="product : ${featuredProducts}">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img th:if="${product.imageUrl != null}" 
+                                 th:src="${product.imageUrl}" 
+                                 class="card-img-top" 
+                                 alt="Producto"
+                                 style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${product.name}">Producto</h5>
+                                <p class="card-text text-muted mb-2" th:text="${product.brand.name}">Marca</p>
+                                <p class="card-text text-success fw-bold mb-3" th:text="${#numbers.formatCurrency(product.price)}">
+                                    $0
+                                </p>
+                                <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-eye"></i> Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Marcas -->
+            <section>
+                <h2 class="h3 fw-bold mb-4">
+                    <i class="bi bi-tags text-info"></i> Nuestras Marcas
+                </h2>
+                <div class="row g-4">
+                    <div class="col-6 col-md-3" th:each="brand : ${brands}">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <h5 class="mb-0" th:text="${brand.name}">Marca</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
