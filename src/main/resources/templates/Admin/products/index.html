@@ -46,11 +46,11 @@
                         </thead>
                          <tbody> <tr th:each="product : ${products}">
                                 <td>
-                                     <img th:src="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl) ? product.imageUrl : 'https://via.placeholder.com/60x60/6c757d/ffffff?text=IMG'}" 
+                                     <img th:src="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl) ? product.imageUrl : '/images/default-product.png'}" 
                                          th:alt="${product.name}" 
                                          class="rounded" 
                                          style="width: 60px; height: 60px; object-fit: cover;"
-                                         onerror="this.src='https://via.placeholder.com/60x60/6c757d/ffffff?text=IMG'">
+                                         onerror="this.src=''">
                                 </td>
                                  <td>
                                     <div class="fw-bold" th:text="${product.name}">Nombre</div> <small class="text-muted" th:text="${#strings.abbreviate(product.description, 50)}">Descripción</small>

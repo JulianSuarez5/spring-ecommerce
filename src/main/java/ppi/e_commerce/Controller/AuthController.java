@@ -93,13 +93,16 @@ public String registerUser(@RequestParam String name,
     }
 
     @PostMapping("/admin/register")
-    public String registerAdmin(@RequestParam String username,
+    public String registerAdmin(@RequestParam String name,      
+                                @RequestParam String username,
                                 @RequestParam String email,
+                                @RequestParam String phone,      
+                                @RequestParam String address,   
                                 @RequestParam String password,
                                 @RequestParam String confirmPassword,
                                 @RequestParam(required = false) String token,
                                 Model model) {
-
+        
         boolean adminExists = userRepository.existsByRole("ADMIN");
 
         if (adminExists) {
@@ -134,8 +137,11 @@ public String registerUser(@RequestParam String name,
         }
 
         User user = new User();
+        user.setName(name);          
         user.setUsername(username);
         user.setEmail(email);
+        user.setPhone(phone);         
+        user.setAddress(address);   
         user.setPassword(passwordEncoder.encode(password));
         user.setRole("ADMIN");
         user.setActive(true);

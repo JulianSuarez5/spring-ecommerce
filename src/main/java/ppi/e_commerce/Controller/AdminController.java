@@ -104,9 +104,6 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    // ❌ REMOVIDO: Este método ahora está en AdminOrderController
-    // @GetMapping("/orders")
-    // public String adminOrders(Model model) { ... }
 
     @GetMapping("/profile")
     public String adminProfile() {

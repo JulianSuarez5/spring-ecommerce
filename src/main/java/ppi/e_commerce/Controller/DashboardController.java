@@ -76,7 +76,7 @@ public class DashboardController {
         stats.put("totalSales", totalSales != null ? totalSales : 0.0);
         
         // Total orders
-        Long totalOrders = orderService.countOrdersByUser(null); // This would need to be implemented
+        Long totalOrders = orderService.countOrdersByUser(null); 
         stats.put("totalOrders", totalOrders != null ? totalOrders : 0);
         
         // Total products

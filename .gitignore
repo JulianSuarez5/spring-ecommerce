@@ -32,11 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-# Ignorar historial de VS Code
-.history/
-
-# Ignorar carpeta de archivos subidos por usuarios
-uploads/
 
 # Recomendado para proyectos Java/Maven
 target/
