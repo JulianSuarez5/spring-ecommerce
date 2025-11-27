@@ -7,7 +7,7 @@
 <body>
     <div th:fragment="content">
         <!-- Page Header -->
-        <div class="bg-gradient-primary text-white py-5">
+        <div class="bg-gradient-primary text-white py-5 animate-fade-in-down">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
@@ -17,7 +17,7 @@
                         <p class="lead mb-0">Descubre nuestra amplia gama de productos de calidad</p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
-                        <span class="badge bg-light text-dark fs-6">
+                        <span class="badge bg-light text-dark fs-6 animate-pulse">
                             <span th:text="${#lists.size(products)}">0</span> productos disponibles
                         </span>
                     </div>
@@ -29,9 +29,9 @@
             <div class="row">
                 <!-- Sidebar de Filtros -->
                 <div class="col-lg-3">
-                    <div class="card border-0 shadow-sm mb-4">
+                    <div class="filter-sidebar card mb-4 animate-fade-in-left">
                         <div class="card-body">
-                            <h5 class="fw-bold mb-3">
+                            <h5 class="fw-bold mb-3 text-gradient">
                                 <i class="bi bi-funnel"></i> Filtros
                             </h5>
                             
@@ -90,8 +90,8 @@
 
                     <!-- Grid de productos -->
                     <div class="row g-4" th:unless="${#lists.isEmpty(products)}">
-                        <div class="col-md-6 col-lg-4" th:each="product : ${products}">
-                            <div class="card product-card border-0 shadow-sm h-100">
+                        <div class="col-md-6 col-lg-4" th:each="product, iterStat : ${products}">
+                            <div class="card product-card h-100 animate-fade-in-up" th:style="'animation-delay: ' + ${iterStat.index * 0.1} + 's;'">
                                 <div class="position-relative">
                                     <img th:src="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl) ? product.imageUrl : 'https://via.placeholder.com/300x200/3498db/ffffff?text=Producto'}" 
                                          th:alt="${product.name}" 
@@ -161,16 +161,6 @@
             </div>
         </div>
 
-        <style>
-            .product-card {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            
-            .product-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            }
-        </style>
     </div>
 </body>
 </html>
